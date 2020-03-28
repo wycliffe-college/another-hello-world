@@ -16,5 +16,81 @@
 <p><span style="background-color: #1932ff">Coding is DOOOOOOM!</span></p>
 <p><span style="background-color: #ff21d3">1</span></p>
 
+
+
+
+
+<table bgcolor="#f0f8ff">
+<tr>
+    <th>
+        <h1> <span style="background-color: #f8ff30"> Check your passwords kids </span> </h1>
+    </th>
+
+</tr>
+    <tr>
+    <td>
+        <label><span style="background-color: #f8ff30"> Password </span></label>
+        <input id="password-box" type="password" />
+        <div id="password-time" class="hsimp-time"></div>
+        <ul id="password-checks" class="hsimp-checks"></ul>
+
+        <script src="hsimp.min.js"></script>
+        <script>
+            (function (doc) {
+                var passwordInput = doc.getElementById("password-box"),
+                    timeDiv = doc.getElementById("password-time"),
+                    checksList = doc.getElementById("password-checks");
+
+                // Code to render the time returned by HSIMP
+                var renderTime = function (time, input) {
+                    timeDiv.innerHTML = time || "";
+                };
+
+                // Code to output the checks returned by HSIMP
+                var renderChecks = function (checks, input) {
+                    checksList.innerHTML = "";
+
+                    for (var i = 0, l = checks.length; i < l; i++) {
+                        var li = doc.createElement("li"),
+                            title = doc.createElement("h2"),
+                            message = doc.createElement("p");
+
+                        title.innerHTML = checks[i].name;
+                        li.appendChild(title);
+
+                        message.innerHTML = checks[i].message;
+                        li.appendChild(message);
+
+                        checksList.appendChild(li);
+                    }
+                };
+
+                // Setup the HSIMP object
+                var attachTo = hsimp({
+                    options: {
+                        calculationsPerSecond: 10e9, // 10 billion calculations per second
+                        good: 31557600e9, // 1 billion years
+                        ok: 31557600e3 // 1 thousand years
+                    },
+                    outputTime: renderTime,
+                    outputChecks: renderChecks
+                });
+
+                // setup custom values for "instantly"/"forever"
+                hsimp.setDictionary({
+                    "instantly": "Immediately",
+                    "forever": "Aaaaaaaaaaaaaaaages",
+                });
+
+                // Run the HSIMP
+                attachTo(passwordInput);
+            }(this.document));
+        </script>
+    </td>
+</tr>
+
+
+</table>
+
 </body>
 </html>
