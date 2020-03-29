@@ -31,19 +31,19 @@
 
         var pl = planck, Vec2 = pl.Vec2;
         var world = new pl.World({
-            gravity : Vec2(0, -10) //-1.62 is gravity on the moon by the way, added by Brendan.
+            gravity : Vec2(0, -10)
         });
 
         // wheel spring settings
         var HZ = 4.0;
         var ZETA = 0.7;
-        var SPEED = 10.0;
+        var SPEED = 50.0;
 
         var ground = world.createBody();
 
         var groundFD = {
             density : 0.0,
-            friction : 1000000   //used to be 0.6 but i think thats tooooo smalllll
+            friction : 0.6
         };
 
         ground.createFixture(pl.Edge(Vec2(-20.0, 0.0), Vec2(20.0, 0.0)), groundFD);
@@ -89,7 +89,7 @@
             enableLimit : true
         }, ground, teeter, teeter.getPosition()));
 
-        teeter.applyAngularImpulse(10000000.0, true); //used to be 100
+        teeter.applyAngularImpulse(100.0, true);
 
         // Bridge
         var bridgeFD = {};
@@ -127,27 +127,29 @@
             .createFixture(box, 0.5);
 
         // Car
-        var car = world.createDynamicBody(Vec2(0.0, 5.0));
+        var car = world.createDynamicBody(Vec2(0.0, 1.0));
         car.createFixture(pl.Polygon([
-            Vec2(10, 10),
-            Vec2(10, 10),
-            Vec2(30, 10),
-            Vec2(30, 10),
-        ]), 10);
+            Vec2(-1.5, -0.5),
+            Vec2(1.5, -0.5),
+            Vec2(1.5, 0.0),
+            Vec2(0.0, 0.9),
+            Vec2(-1.15, 0.9),
+            Vec2(-1.5, 0.2)
+        ]), 1.0);
 
         var wheelFD = {};
         wheelFD.density = 1.0;
         wheelFD.friction = 0.9;
 
-        var wheelBack = world.createDynamicBody(Vec2(10, 1));
-        wheelBack.createFixture(pl.Circle(3), wheelFD);
+        var wheelBack = world.createDynamicBody(Vec2(-1.0, 0.35));
+        wheelBack.createFixture(pl.Circle(0.4), wheelFD);
 
-        var wheelFront = world.createDynamicBody(Vec2(40, 1));
-        wheelFront.createFixture(pl.Circle(3), wheelFD);
+        var wheelFront = world.createDynamicBody(Vec2(1.0, 0.4));
+        wheelFront.createFixture(pl.Circle(0.4), wheelFD);
 
         var springBack = world.createJoint(pl.WheelJoint({
             motorSpeed : 0.0,
-            maxMotorTorque : 100000.0,
+            maxMotorTorque : 20.0,
             enableMotor : true,
             frequencyHz : HZ,
             dampingRatio : ZETA
@@ -155,7 +157,7 @@
 
         var springFront = world.createJoint(pl.WheelJoint({
             motorSpeed : 0.0,
-            maxMotorTorque : 100000.0,
+            maxMotorTorque : 10.0,
             enableMotor : false,
             frequencyHz : HZ,
             dampingRatio : ZETA
@@ -163,12 +165,12 @@
 
         testbed.keydown = function() {
             if (testbed.activeKeys.down) {
-                HZ = Math.max(0.0, HZ - 0.1);
+                HZ = Math.max(0.0, HZ - 1.0);
                 springBack.setSpringFrequencyHz(HZ);
                 springFront.setSpringFrequencyHz(HZ);
 
             } else if (testbed.activeKeys.up) {
-                HZ += 0.1;
+                HZ += 1.0;
                 springBack.setSpringFrequencyHz(HZ);
                 springFront.setSpringFrequencyHz(HZ);
             }
